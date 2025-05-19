@@ -1,1 +1,8 @@
 /* App-specific styles can be added here if needed */
+
+.octocat {
+  background-image: url('/octocat.png');
+  background-size: cover; /* Or contain, depending on the image */
+  width: 100%;
+  height: 100%;
+}

@@ -3,10 +3,10 @@ import GameBoard from './components/GameBoard';
 import './App.css';
 
 type Cell = 'grass' | 'water' | 'road' | null;
-type Entity = 'frog' | 'vehicle' | 'log' | null;
+type Entity = 'octocat' | 'vehicle' | 'log' | null;
 
 const BOARD_SIZE = 13;
-const INIT_FROG_POS = { x: 6, y: 12 };
+const INIT_OCTOCAT_POS = { x: 6, y: 12 };
 
 const createBoard = (): Cell[][] => {
   const board: Cell[][] = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
@@ -32,7 +32,7 @@ const App: React.FC = () => {
   const [entities, setEntities] = useState<(Entity | null)[][]>(
     Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null))
   );
-  const [frogPosition, setFrogPosition] = useState({ ...INIT_FROG_POS });
+  const [octocatPosition, setOctocatPosition] = useState({ ...INIT_OCTOCAT_POS });
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
 
@@ -111,7 +111,7 @@ const App: React.FC = () => {
   }, []);
 
   const checkCollision = useCallback(() => {
-    const { x, y } = frogPosition;
+    const { x, y } = octocatPosition;
     
     // Check vehicle collision
     if (board[y][x] === 'road' && entities[y][x] === 'vehicle') {
@@ -126,15 +126,15 @@ const App: React.FC = () => {
     // Check if reached the other side
     if (y === 0) {
       setScore(s => s + 100);
-      setFrogPosition({ ...INIT_FROG_POS });
+      setOctocatPosition({ ...INIT_OCTOCAT_POS });
     }
-  }, [board, entities, frogPosition]);
+  }, [board, entities, octocatPosition, setScore]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (gameOver) return;
       
-      setFrogPosition(pos => {
+      setOctocatPosition(pos => {
         const newPos = { ...pos };
         
         switch (e.key) {
@@ -162,18 +162,24 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (gameOver) return;
-    
+
     const gameLoop = setInterval(() => {
       moveEntities();
       spawnEntities();
-      checkCollision();
+      // checkCollision(); // Removed from here
     }, 1000);
-    
+
     return () => clearInterval(gameLoop);
-  }, [gameOver, moveEntities, spawnEntities, checkCollision]);
+  }, [gameOver, moveEntities, spawnEntities]); // checkCollision removed from dependencies
+
+  // useEffect for collision checking
+  useEffect(() => {
+    if (gameOver) return;
+    checkCollision();
+  }, [gameOver, checkCollision]); // checkCollision itself depends on frogPosition, entities
 
   const handleRestart = () => {
-    setFrogPosition({ ...INIT_FROG_POS });
+    setOctocatPosition({ ...INIT_OCTOCAT_POS });
     setEntities(Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null)));
     setScore(0);
     setGameOver(false);
@@ -183,7 +189,7 @@ const App: React.FC = () => {
     <GameBoard
       board={board}
       entities={entities}
-      frogPosition={frogPosition}
+      frogPosition={octocatPosition}
       score={score}
       gameOver={gameOver}
       onRestart={handleRestart}

@@ -1,12 +1,12 @@
 import React from 'react';
 
 type Cell = 'grass' | 'water' | 'road' | null;
-type Entity = 'frog' | 'vehicle' | 'log' | null;
+type Entity = 'octocat' | 'vehicle' | 'log' | null;
 
 interface GameBoardProps {
   board: Cell[][];
   entities: (Entity | null)[][];
-  frogPosition: { x: number; y: number };
+  frogPosition: { x: number; y: number }; // Will rename in next step
   score: number;
   gameOver: boolean;
   onRestart: () => void;
@@ -33,7 +33,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
               className={`cell ${cell || ''}`}
             >
               {frogPosition.x === x && frogPosition.y === y ? (
-                <div className="frog" />
+                <div className="octocat" />
               ) : entities[y][x] ? (
                 <div className={entities[y][x] || ''} />
               ) : null}
