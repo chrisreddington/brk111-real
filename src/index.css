@@ -26,6 +26,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .game-header {
@@ -34,26 +35,31 @@ body {
   border-radius: 6px;
   margin-bottom: 16px;
   width: 100%;
-  max-width: 600px;
+  max-width: 90vmin;
   text-align: center;
 }
 
 .game-board {
   display: grid;
-  grid-template-rows: repeat(13, 40px);
-  grid-template-columns: repeat(13, 40px);
+  grid-template-rows: repeat(13, minmax(30px, 1fr));
+  grid-template-columns: repeat(13, minmax(30px, 1fr));
   gap: 1px;
   background-color: var(--color-header-bg);
   border: 1px solid var(--color-btn-bg);
   border-radius: 6px;
+  width: 100%;
+  max-width: 90vmin;
+  max-height: 90vmin;
+  aspect-ratio: 1;
 }
 
 .cell {
-  width: 40px;
-  height: 40px;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .grass {
@@ -69,22 +75,22 @@ body {
 }
 
 .frog {
-  width: 30px;
-  height: 30px;
+  width: 75%;
+  height: 75%;
   background-color: var(--color-success-fg);
   border-radius: 50%;
 }
 
 .vehicle {
-  width: 35px;
-  height: 25px;
+  width: 85%;
+  height: 60%;
   background-color: var(--color-danger-fg);
   border-radius: 4px;
 }
 
 .log {
-  width: 35px;
-  height: 25px;
+  width: 85%;
+  height: 60%;
   background-color: #8b5e3c;
   border-radius: 4px;
 }
@@ -92,6 +98,27 @@ body {
 .score {
   font-size: 1.2em;
   margin-bottom: 8px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.score-change {
+  animation: scoreAnimation 0.5s ease-in-out;
+}
+
+@keyframes scoreAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .game-over {
@@ -104,6 +131,9 @@ body {
   border-radius: 6px;
   text-align: center;
   z-index: 100;
+  width: 80%;
+  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 button {

@@ -35,6 +35,7 @@ const App: React.FC = () => {
   const [octocatPosition, setOctocatPosition] = useState({ ...INIT_OCTOCAT_POS });
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const [highestRow, setHighestRow] = useState(INIT_OCTOCAT_POS.y); // Track the highest row reached
 
   const moveEntities = useCallback(() => {
     setEntities(prev => {
@@ -125,8 +126,9 @@ const App: React.FC = () => {
     
     // Check if reached the other side
     if (y === 0) {
-      setScore(s => s + 100);
+      setScore(s => s + 100); // Bonus for reaching the goal
       setOctocatPosition({ ...INIT_OCTOCAT_POS });
+      setHighestRow(INIT_OCTOCAT_POS.y); // Reset highest row
     }
   }, [board, entities, octocatPosition, setScore]);
 
@@ -160,6 +162,17 @@ const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [gameOver]);
 
+  // Update score when player moves to a new highest position (lower row number)
+  useEffect(() => {
+    if (gameOver) return;
+    
+    // If the player moves to a new highest row (lower y value), update score
+    if (octocatPosition.y < highestRow) {
+      setScore(prevScore => prevScore + 10); // Add 10 points for each row advancement
+      setHighestRow(octocatPosition.y);
+    }
+  }, [octocatPosition.y, highestRow, gameOver]);
+
   useEffect(() => {
     if (gameOver) return;
 
@@ -183,6 +196,7 @@ const App: React.FC = () => {
     setEntities(Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null)));
     setScore(0);
     setGameOver(false);
+    setHighestRow(INIT_OCTOCAT_POS.y); // Reset highest row on restart
   };
 
   return (

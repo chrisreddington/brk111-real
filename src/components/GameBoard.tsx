@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 type Cell = 'grass' | 'water' | 'road' | null;
 type Entity = 'octocat' | 'vehicle' | 'log' | null;
@@ -6,7 +6,7 @@ type Entity = 'octocat' | 'vehicle' | 'log' | null;
 interface GameBoardProps {
   board: Cell[][];
   entities: (Entity | null)[][];
-  frogPosition: { x: number; y: number }; // Will rename in next step
+  frogPosition: { x: number; y: number };
   score: number;
   gameOver: boolean;
   onRestart: () => void;
@@ -20,10 +20,21 @@ const GameBoard: React.FC<GameBoardProps> = ({
   gameOver,
   onRestart,
 }) => {
+  const [animateScore, setAnimateScore] = useState(false);
+  
+  // Add animation when score changes
+  useEffect(() => {
+    if (score > 0) {
+      setAnimateScore(true);
+      const timer = setTimeout(() => setAnimateScore(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [score]);
+
   return (
     <div className="game-container">
       <div className="game-header">
-        <div className="score">Score: {score}</div>
+        <div className={`score ${animateScore ? 'score-change' : ''}`}>Score: {score}</div>
       </div>
       <div className="game-board">
         {board.map((row, y) =>
